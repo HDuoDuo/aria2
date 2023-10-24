@@ -21,7 +21,7 @@ jobs:
           zlib1g-dev \
           libsqlite3-dev \
           pkg-config
-    - name: Configure autotools (Linux, openssl)
+    - name: Configure autotools (Linux)
       run: |
         cd /tmp
         curl -fSL https://github.com/aria2/aria2/releases/download/release-1.36.0/aria2-1.36.0.tar.xz -o aria2.tar.xz
