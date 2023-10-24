@@ -31,7 +31,6 @@ jobs:
         CC="gcc"
         CXX="g++"
         ./configure \
-            --prefix=/usr/local \
             --with-libxml2 \
             --without-libgcrypt \
             --with-openssl \
@@ -47,4 +46,4 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: aria2c
-        path: /usr/local
+        path: /tmp/aria2-1.36.0/src
