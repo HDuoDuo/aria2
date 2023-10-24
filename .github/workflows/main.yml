@@ -20,9 +20,6 @@ jobs:
           zlib1g-dev \
           libsqlite3-dev \
           pkg-config
-    - name: Libtool
-      run: |
-        autoreconf -i
     - name: Configure autotools (Linux, openssl)
       run: |
         cd /tmp \
