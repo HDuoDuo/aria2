@@ -31,9 +31,9 @@ jobs:
         CC="gcc"
         CXX="g++"
         ./configure \
-            --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt' \
-            --enable-shared=no \
-            ARIA2_STATIC=yes
+          --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt' \
+          --enable-shared=no \
+          ARIA2_STATIC=yes
         make
     - uses: actions/upload-artifact@v3
       with:
