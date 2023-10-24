@@ -1,16 +1,13 @@
 name: build
-
-on: [push, pull_request]
-
+on: [push]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
     - name: Linux setup
       run: |
         sudo apt-get install \
-          g++-11 \
+          tar \
           libcppunit-dev \
           autoconf \
           automake \
@@ -24,22 +21,29 @@ jobs:
           zlib1g-dev \
           libsqlite3-dev \
           pkg-config
-    - name: Setup gcc (Linux)
-      run: |
-        echo 'CC=gcc-11' >> $GITHUB_ENV
-        echo 'CXX=g++-11' >> $GITHUB_ENV
-    - name: Libtool
-      run: |
-        autoreconf -i
     - name: Configure autotools (Linux, openssl)
       run: |
-        ./configure --without-gnutls --with-openssl ARIA2_STATIC=yes -prefix=/home/runner/work/aria2/aria2/doc
-    - name: Build aria2
-      run: |
+        cd /tmp
+        curl -fSL https://github.com/aria2/aria2/releases/download/release-1.36.0/aria2-1.36.0.tar.xz -o aria2.tar.xz
+        tar xJf aria2.tar.xz
+        cd aria2-1.36.0
+        autoreconf -i
+        CC="gcc"
+        CXX="g++"
+        ./configure \
+          --with-libxml2 \
+          --without-libgcrypt \
+          --with-openssl \
+          --without-libnettle \
+          --without-gnutls \
+          --without-libgmp \
+          --with-libssh2 \
+          --with-sqlite3 \
+          --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt' \
+          --enable-shared=no \
+          ARIA2_STATIC=yes
         make
-        make install-strip
-    - run: ls ./
     - uses: actions/upload-artifact@v3
       with:
         name: aria2c
-        path: src
+        path: /tmp/aria2-1.36.0/src/aria2c
