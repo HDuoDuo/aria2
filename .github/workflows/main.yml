@@ -31,14 +31,6 @@ jobs:
         CC="gcc"
         CXX="g++"
         ./configure \
-            --with-libxml2 \
-            --without-libgcrypt \
-            --with-openssl \
-            --without-libnettle \
-            --without-gnutls \
-            --without-libgmp \
-            --with-libssh2 \
-            --with-sqlite3 \
             --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt' \
             --enable-shared=no \
             ARIA2_STATIC=yes
