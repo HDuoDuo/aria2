@@ -1,0 +1,42 @@
+name: build
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - workflows/buildnas.yml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Linux setup
+      run: |
+        sudo apt-get install \
+          libcppunit-dev \
+          autoconf \
+          automake \
+          autotools-dev \
+          autopoint \
+          libtool \
+          libssl-dev \
+          libssh2-1-dev \
+          libc-ares-dev \
+          libxml2-dev \
+          zlib1g-dev \
+          libsqlite3-dev \
+          pkg-config
+    - name: Libtool
+      run: |
+        autoreconf -i
+    - name: Configure autotools (Linux, openssl)
+      run: |
+        ./configure ARIA2_STATIC=yes --without-gnutls --with-openssl --enable-static --disable-shared
+    - name: Build aria2
+      run: |
+        make
+    - uses: actions/upload-artifact@v3
+      with:
+        name: aria2c
+        path: src/aria2c
