@@ -1,0 +1,53 @@
+name: build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Linux setup
+      run: |
+        sudo apt-get install \
+          libcppunit-dev \
+          autoconf \
+          automake \
+          autotools-dev \
+          autopoint \
+          libtool \
+          libssl-dev \
+          libssh2-1-dev \
+          libc-ares-dev \
+          libxml2-dev \
+          zlib1g-dev \
+          libsqlite3-dev \
+          pkg-config
+    - name: Libtool
+      run: |
+        autoreconf -i
+    - name: Configure autotools (Linux, openssl)
+      run: |
+        cd /tmp \
+        curl -fSL https://github.com/aria2/aria2/releases/download/release-1.36.0/aria2-1.36.0.tar.xz -o aria2.tar.xz \
+        tar xJf aria2.tar.xz \
+        cd aria2-1.36.0 \
+        CC="gcc" \
+        CXX="g++" \
+        ./configure \
+            --prefix=/usr/local \
+            --with-libxml2 \
+            --without-libgcrypt \
+            --with-openssl \
+            --without-libnettle \
+            --without-gnutls \
+            --without-libgmp \
+            --with-libssh2 \
+            --with-sqlite3 \
+            --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt' \
+            --enable-shared=no \
+            ARIA2_STATIC=yes
+    - name: Build aria2
+      run: |
+        make
+    - uses: actions/upload-artifact@v3
+      with:
+        name: aria2c
+        path: /usr/local
