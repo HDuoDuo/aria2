@@ -43,8 +43,6 @@ jobs:
             --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt' \
             --enable-shared=no \
             ARIA2_STATIC=yes
-    - name: Build aria2
-      run: |
         make
     - uses: actions/upload-artifact@v3
       with:
