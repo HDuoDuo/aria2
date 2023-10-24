@@ -10,7 +10,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: COMPILER AND PATH
+      PREFIX=/usr
+      C_COMPILER="gcc"
+      CXX_COMPILER="g++"
+      ARIA2_VERSION=1.36.0
     - name: Linux setup
       run: |
         sudo apt-get install \
@@ -32,7 +36,25 @@ jobs:
         autoreconf -i
     - name: Configure autotools (Linux, openssl)
       run: |
-        ./configure ARIA2_STATIC=yes --without-gnutls --with-openssl --enable-static --disable-shared
+        cd /tmp \
+        curl -fSL https://github.com/aria2/aria2/releases/download/release-${ARIA2_VERSION}/aria2-${ARIA2_VERSION}.tar.xz -o aria2.tar.xz \
+        tar xJf aria2.tar.xz \
+        cd aria2-${ARIA2_VERSION} \
+        CC="$C_COMPILER" \
+        CXX="$CXX_COMPILER" \
+        ./configure \
+            --prefix=$PREFIX \
+            --with-libxml2 \
+            --without-libgcrypt \
+            --with-openssl \
+            --without-libnettle \
+            --without-gnutls \
+            --without-libgmp \
+            --with-libssh2 \
+            --with-sqlite3 \
+            --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt' \
+            --enable-shared=no \
+            ARIA2_STATIC=yes
     - name: Build aria2
       run: |
         make
