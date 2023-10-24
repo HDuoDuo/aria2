@@ -31,6 +31,7 @@ jobs:
     - name: Configure autotools (Linux, openssl)
       run: |
         cd /tmp \
+        
         curl -fSL https://github.com/aria2/aria2/releases/download/release-${ARIA2_VERSION}/aria2-${ARIA2_VERSION}.tar.xz -o aria2.tar.xz \
         tar xJf aria2.tar.xz \
         cd aria2-${ARIA2_VERSION} \
